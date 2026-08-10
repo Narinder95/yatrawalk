@@ -1,4 +1,5 @@
 
+import 'dart:ui' as ui;
 import 'package:flutter/material.dart';
 
 /// Animated hero card shown at the top of the Home dashboard.
@@ -114,23 +115,21 @@ class _YatraHeroAnimationState extends State<YatraHeroAnimation>
   Widget _buildStickerImage(int index) {
     return Container(
       color: Colors.transparent,
-      child: Align(
-        alignment: Alignment.center,
-        child: Image.asset(
-          stickerImages[index % stickerImages.length],
-          fit: BoxFit.contain,
-          filterQuality: FilterQuality.high,
-          isAntiAlias: true,
-          errorBuilder: (context, error, stackTrace) {
-            // Fallback emoji if sticker not found
-            return Center(
-              child: Text(
-                '🙏',
-                style: TextStyle(fontSize: 56),
-              ),
-            );
-          },
-        ),
+      padding: const EdgeInsets.all(8),
+      child: Image.asset(
+        stickerImages[index % stickerImages.length],
+        fit: BoxFit.contain,
+        filterQuality: FilterQuality.high,
+        cacheHeight: 400,
+        cacheWidth: 400,
+        errorBuilder: (context, error, stackTrace) {
+          return Center(
+            child: Text(
+              '🙏',
+              style: TextStyle(fontSize: 56),
+            ),
+          );
+        },
       ),
     );
   }
