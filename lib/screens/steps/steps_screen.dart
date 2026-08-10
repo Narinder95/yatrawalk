@@ -145,6 +145,8 @@ class _StepsScreenState extends State<StepsScreen> {
 
   @override
   Widget build(BuildContext context) {
+    debugPrint('[StepsScreen] Build: loading=$_loading, permissionGranted=$_permissionGranted, isWeb=$kIsWeb');
+
     if (_loading) {
       return const Scaffold(
         body: Center(
@@ -153,7 +155,8 @@ class _StepsScreenState extends State<StepsScreen> {
       );
     }
 
-    if (!_permissionGranted) {
+    if (!_permissionGranted && !kIsWeb) {
+      debugPrint('[StepsScreen] Permission denied, showing PermissionView');
       return const PermissionView();
     }
 
