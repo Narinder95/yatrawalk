@@ -1,0 +1,67 @@
+{
+  "hosting": {
+    "public": "build/web",
+    "ignore": ["firebase.json", "**/.*", "**/node_modules/**"],
+    "rewrites": [
+      {
+        "source": "**",
+        "destination": "/index.html"
+      }
+    ],
+    "headers": [
+      {
+        "source": "/sw.js",
+        "headers": [
+          {
+            "key": "Cache-Control",
+            "value": "public, max-age=0, must-revalidate"
+          }
+        ]
+      },
+      {
+        "source": "/index.html",
+        "headers": [
+          {
+            "key": "Cache-Control",
+            "value": "public, max-age=3600"
+          }
+        ]
+      },
+      {
+        "source": "**/*.@(js|css|ico|png|jpg|jpeg|svg|woff|woff2)",
+        "headers": [
+          {
+            "key": "Cache-Control",
+            "value": "public, max-age=31536000"
+          }
+        ]
+      }
+    ]
+  },
+  "flutter": {
+    "platforms": {
+      "android": {
+        "default": {
+          "projectId": "yatrawalk-abd84",
+          "appId": "1:554660662027:android:c4dfef13b805d2914ab00e",
+          "fileOutput": "android/app/google-services.json"
+        }
+      },
+      "dart": {
+        "lib/firebase_options.dart": {
+          "projectId": "yatrawalk-abd84",
+          "configurations": {
+            "android": "1:554660662027:android:c4dfef13b805d2914ab00e",
+            "ios": "1:554660662027:ios:09302b5c28c959b04ab00e",
+            "macos": "1:554660662027:ios:09302b5c28c959b04ab00e",
+            "web": "1:554660662027:web:a13b5fc1119c647b4ab00e",
+            "windows": "1:554660662027:web:fcaa3faa00563a214ab00e"
+          }
+        }
+      }
+    }
+  },
+  "firestore": {
+    "rules": "firestore.rules"
+  }
+}
