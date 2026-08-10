@@ -10,7 +10,7 @@ class StepHeader extends StatelessWidget {
         SizedBox(height: 20),
 
         Text(
-          "YatraWalk",
+          "DigiTeerth",
           style: TextStyle(
             fontSize: 30,
             fontWeight: FontWeight.bold,

@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 
-import 'home_screen.dart';
 import 'journey_screen.dart';
 import 'profile_screen.dart';
 import 'steps_screen.dart';
@@ -17,10 +16,10 @@ class _MainScreenState extends State<MainScreen> {
   int _selectedIndex = 0;
 
   final List<Widget> _pages = const [
-   const StepsScreen(),
-   const JourneyScreen(),
-   const FriendsScreen(),
-   const ProfileScreen(),
+   StepsScreen(),
+   JourneyScreen(),
+   FriendsScreen(),
+   ProfileScreen(),
   ];
 
   @override

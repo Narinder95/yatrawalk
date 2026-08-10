@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'journey_setup_screen.dart';
-import '../services/storage_service.dart';
+import '../models/journey_model.dart';
+import '../services/journey_service.dart';
+import '../services/step_service.dart';
 
 class DestinationScreen extends StatefulWidget {
   const DestinationScreen({super.key});
@@ -16,6 +18,115 @@ class _DestinationScreenState extends State<DestinationScreen> {
 
   Destination? selectedDestination;
 
+  // If the user already has an active (unfinished) Yatra, we ask for
+  // confirmation before letting them start a new one, since starting a new
+  // Yatra archives the current one's progress.
+  JourneyModel? _existingActiveJourney;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadExistingJourney();
+  }
+
+  Future<void> _loadExistingJourney() async {
+    final journey = await JourneyService.getActiveJourney();
+    if (!mounted) return;
+    setState(() {
+      _existingActiveJourney = (journey != null && !journey.completed)
+          ? journey
+          : null;
+    });
+  }
+
+  Future<bool> _confirmReplaceActiveJourneyIfNeeded() async {
+    final active = _existingActiveJourney;
+    if (active == null) return true;
+
+    final progressPercent = (active.progressPercentage * 100).toStringAsFixed(0);
+
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (dialogContext) => AlertDialog(
+        title: const Text("Start a new Yatra?"),
+        content: Text(
+          "You already have an active Yatra to ${active.destinationName} "
+          "($progressPercent% complete). Starting a new Yatra will archive "
+          "your current one - its progress is kept in your history, but it "
+          "will no longer be tracked as active.",
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(dialogContext, false),
+            child: const Text("Cancel"),
+          ),
+          FilledButton(
+            onPressed: () => Navigator.pop(dialogContext, true),
+            child: const Text("Start New Yatra"),
+          ),
+        ],
+      ),
+    );
+
+    return confirmed ?? false;
+  }
+
+  /// Lets the user set their own Sankalp (manifestation wish/pledge) for
+  /// this Yatra, instead of a hardcoded generic pledge. Returns null if
+  /// the user cancels out of starting the Yatra entirely.
+  Future<String?> _askForSankalp() async {
+    final controller = TextEditingController(
+      text: "I will complete my Yatra with faith and discipline.",
+    );
+
+    return showDialog<String>(
+      context: context,
+      barrierDismissible: false,
+      builder: (dialogContext) => AlertDialog(
+        title: const Text("🙏 Set your Sankalp"),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const Text(
+              "A Sankalp is a wish or intention you carry with you "
+              "through this Yatra - you can revisit and renew it daily.",
+              style: TextStyle(color: Colors.black54),
+            ),
+            const SizedBox(height: 16),
+            TextField(
+              controller: controller,
+              maxLines: 3,
+              autofocus: true,
+              decoration: const InputDecoration(
+                hintText: "Write your Sankalp...",
+                border: OutlineInputBorder(),
+              ),
+            ),
+          ],
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(dialogContext),
+            child: const Text("Cancel"),
+          ),
+          FilledButton(
+            onPressed: () {
+              final text = controller.text.trim();
+              Navigator.pop(
+                dialogContext,
+                text.isNotEmpty
+                    ? text
+                    : "I will complete my Yatra with faith and discipline.",
+              );
+            },
+            child: const Text("Begin Yatra"),
+          ),
+        ],
+      ),
+    );
+  }
+
   final List<Destination> destinations = [
     Destination(
       name: "Golden Temple",
@@ -24,6 +135,7 @@ class _DestinationScreenState extends State<DestinationScreen> {
       emoji: "🛕",
       latitude: 31.6200,
       longitude: 74.8765,
+      distanceKm: 450,
     ),
     Destination(
       name: "Kedarnath",
@@ -32,6 +144,7 @@ class _DestinationScreenState extends State<DestinationScreen> {
       emoji: "🕉",
       latitude: 30.7352,
       longitude: 79.0669,
+      distanceKm: 2200,
     ),
     Destination(
       name: "Vaishno Devi",
@@ -39,7 +152,8 @@ class _DestinationScreenState extends State<DestinationScreen> {
       category: "Temple",
       emoji: "🛕",
       latitude: 33.0307,
-      longitude: 74.9490
+      longitude: 74.9490,
+      distanceKm: 900,
     ),
     Destination(
       name: "Tirupati Balaji",
@@ -48,14 +162,16 @@ class _DestinationScreenState extends State<DestinationScreen> {
       emoji: "🛕",
       latitude: 13.6833,
       longitude: 79.3470,
+      distanceKm: 1800,
     ),
     Destination(
       name: "Bodh Gaya",
       location: "Bihar",
       category: "Buddhist",
-      emoji: "☸", 
+      emoji: "☸",
       latitude: 24.6950,
       longitude: 84.9913,
+      distanceKm: 1200,
     ),
     Destination(
       name: "Ajmer Sharif",
@@ -64,6 +180,7 @@ class _DestinationScreenState extends State<DestinationScreen> {
       emoji: "☪",
       latitude: 26.4579,
       longitude: 74.6283,
+      distanceKm: 700,
     ),
     Destination(
       name: "Shirdi Sai Baba",
@@ -72,6 +189,7 @@ class _DestinationScreenState extends State<DestinationScreen> {
       emoji: "⛩",
       latitude: 19.7666,
       longitude: 74.4774,
+      distanceKm: 1400,
     ),
   ];
 
@@ -344,27 +462,54 @@ class _DestinationScreenState extends State<DestinationScreen> {
 
                 onPressed: selectedDestination == null
                 ? null
-                : () async { 
-                     await StorageService.saveJourney(
-                        destinationName: selectedDestination!.name,
-                        destinationLocation: selectedDestination!.location,
-                        destinationEmoji: selectedDestination!.emoji,
-                        latitude: 31.6200,
-                        longitude: 74.8765,
-                        );
-                        print("SAVE SUCCESS");
-                        if (!context.mounted) return;
+                : () async {
+                     final destination = selectedDestination!;
 
-                     
-                     Navigator.push(
+                     final canProceed =
+                         await _confirmReplaceActiveJourneyIfNeeded();
+                     if (!canProceed) return;
+                     if (!context.mounted) return;
+
+                     final sankalp = await _askForSankalp();
+                     if (sankalp == null) return; // user backed out
+                     if (!context.mounted) return;
+
+                     // Archive whatever was active before, so there's only
+                     // ever one active Yatra at a time.
+                     final previous = _existingActiveJourney;
+                     if (previous != null) {
+                       await JourneyService.updateJourney(
+                         previous.copyWith(completed: true),
+                       );
+                     }
+
+                     final journey = JourneyModel(
+                       startLocation: "Current Location",
+                       destinationName: destination.name,
+                       destinationLocation: destination.location,
+                       destinationEmoji: destination.emoji,
+                       latitude: destination.latitude,
+                       longitude: destination.longitude,
+                       totalDistanceKm: destination.distanceKm,
+                       startDate: DateTime.now(),
+                       // Steps taken before this moment don't count towards
+                       // this Yatra's progress.
+                       startStepsSnapshot: StepService().totalSteps,
+                       sankalp: sankalp,
+                     );
+
+                     await JourneyService.createJourney(journey);
+                     if (!context.mounted) return;
+
+                     Navigator.pushReplacement(
                         context,
                         MaterialPageRoute(
                             builder: (_) => JourneySetupScreen(
-                                destinationName: selectedDestination!.name,
-                                destinationLocation: selectedDestination!.location,
-                                destinationEmoji: selectedDestination!.emoji,
-                                latitude: 31.6200,
-                                longitude: 74.8765,
+                                destinationName: destination.name,
+                                destinationLocation: destination.location,
+                                destinationEmoji: destination.emoji,
+                                latitude: destination.latitude,
+                                longitude: destination.longitude,
                                 ),
                                 ),
                                 );
@@ -400,6 +545,7 @@ class Destination {
   final String emoji;
   final double latitude;
   final double longitude;
+  final double distanceKm;
 
   Destination({
     required this.name,
@@ -408,5 +554,6 @@ class Destination {
     required this.emoji,
     required this.latitude,
     required this.longitude,
+    required this.distanceKm,
   });
 }

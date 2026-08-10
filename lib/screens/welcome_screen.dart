@@ -33,7 +33,7 @@ class WelcomeScreen extends StatelessWidget {
 
 
               const Text(
-                "Welcome to YatraWalk 🙏",
+                "Welcome to DigiTeerth 🙏",
                 style: TextStyle(
                   fontSize: 28,
                   fontWeight: FontWeight.bold,

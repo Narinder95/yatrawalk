@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "554660662027",
+    "project_id": "yatrawalk-abd84",
+    "storage_bucket": "yatrawalk-abd84.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:554660662027:android:c4dfef13b805d2914ab00e",
+        "android_client_info": {
+          "package_name": "com.example.yatrawalk"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCR4CfAPvM34Qgz58ASHQ6nOoOX4GoWrts"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

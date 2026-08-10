@@ -2,10 +2,12 @@ import 'package:flutter/material.dart';
 
 class StatsCard extends StatelessWidget {
   final int steps;
+  final int dailyGoal;
 
   const StatsCard({
     super.key,
     required this.steps,
+    this.dailyGoal = 10000,
   });
 
   @override
@@ -38,7 +40,9 @@ class StatsCard extends StatelessWidget {
             _StatItem(
               icon: Icons.flag,
               title: "Goal",
-              value: "10,000",
+              // Reads the daily goal the user picked on the Profile
+              // screen, instead of a hardcoded 10,000.
+              value: "$dailyGoal",
               color: Colors.green,
             ),
           ],
@@ -67,7 +71,7 @@ class _StatItem extends StatelessWidget {
       children: [
         CircleAvatar(
           radius: 24,
-          backgroundColor: color.withOpacity(0.15),
+          backgroundColor: color.withValues(alpha: 0.15),
           child: Icon(
             icon,
             color: color,

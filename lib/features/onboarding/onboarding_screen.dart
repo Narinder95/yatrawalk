@@ -91,7 +91,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
   Widget _buildWelcomePage() {
     return _page(
       icon: Icons.directions_walk,
-      title: "Welcome to YatraWalk",
+      title: "Welcome to DigiTeerth",
       subtitle: "Every step you take becomes part of an unforgettable journey.",
     );
   }
@@ -110,7 +110,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
       icon: Icons.security,
       title: "Permissions",
       subtitle:
-          "We'll ask for Activity and Location permissions so YatraWalk can count your steps and track your journey.",
+          "We'll ask for Activity and Location permissions so DigiTeerth can count your steps and track your journey.",
     );
   }
 
@@ -127,7 +127,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
     return _page(
       icon: Icons.flag,
       title: "Creating Your Journey",
-      subtitle: "We're preparing your profile and assigning your YatraWalk ID.",
+      subtitle: "We're preparing your profile and assigning your DigiTeerth ID.",
       isLast: true,
     );
   }

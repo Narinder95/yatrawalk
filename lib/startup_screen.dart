@@ -42,7 +42,7 @@ class _StartupScreenState extends State<StartupScreen> {
     debugPrint('[StartupScreen] InitState - Starting splash timer');
     final splashDuration = kIsWeb
         ? const Duration(milliseconds: 500)  // Skip splash on web
-        : const Duration(milliseconds: 3500); // Full duration on mobile
+        : const Duration(milliseconds: 5000); // Wait for full video animation on mobile
     _splashTimer = Timer(splashDuration, () {
       debugPrint('[StartupScreen] Splash timer complete - triggering rebuild');
       if (mounted) {

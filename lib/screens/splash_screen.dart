@@ -59,7 +59,7 @@ class _SplashScreenState extends State<SplashScreen> {
             const SizedBox(height: 30),
 
             const Text(
-              "YatraWalk",
+              "DigiTeerth",
               style: TextStyle(
                 fontSize: 34,
                 fontWeight: FontWeight.bold,

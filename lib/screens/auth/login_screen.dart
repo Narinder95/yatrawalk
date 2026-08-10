@@ -26,7 +26,7 @@ class _LoginScreenState extends State<LoginScreen> {
             const Text("🙏", style: TextStyle(fontSize: 56)),
             const SizedBox(height: 12),
             const Text(
-              "YatraWalk",
+              "DigiTeerth",
               style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 6),

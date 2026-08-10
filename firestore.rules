@@ -1,0 +1,52 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Users can only read/write their own user document
+    match /users/{uid} {
+      allow read, write: if request.auth.uid == uid;
+
+      // User's profile sub-collections
+      match /step_history/{date} {
+        allow read, write: if request.auth.uid == uid;
+      }
+
+      match /journeys/{journeyId} {
+        allow read, write: if request.auth.uid == uid;
+      }
+
+      match /sankalp_checkins/{checkinId} {
+        allow read, write: if request.auth.uid == uid;
+      }
+
+      match /mantra_recitations/{recitationId} {
+        allow read, write: if request.auth.uid == uid;
+      }
+    }
+
+    // Families - members can read their family's data, creator can manage
+    match /families/{familyId} {
+      // Anyone who's part of the family can read family info
+      allow read: if exists(/databases/$(database)/documents/families/$(familyId)/members/$(request.auth.uid));
+
+      // Only creator can write family doc
+      allow write: if request.auth.uid == resource.data.createdBy;
+
+      // Members sub-collection - each user can only write their own member doc
+      match /members/{memberId} {
+        // Users can read all members in their family
+        allow read: if exists(/databases/$(database)/documents/families/$(familyId)/members/$(request.auth.uid));
+
+        // Users can only write their own member entry
+        allow write: if request.auth.uid == memberId;
+
+        // Family creator can delete member entries
+        allow delete: if request.auth.uid == get(/databases/$(database)/documents/families/$(familyId)).data.createdBy;
+      }
+    }
+
+    // Deny all other access
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}

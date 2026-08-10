@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:geolocator/geolocator.dart';
@@ -28,6 +30,9 @@ class MapJourneyScreen extends StatefulWidget {
 
 class _MapJourneyScreenState extends State<MapJourneyScreen> {
 
+  final StepService _stepService = StepService();
+  StreamSubscription<int>? _stepSubscription;
+
   int totalSteps = 0;
   double distanceWalked = 0;
   double progress = 0;
@@ -42,26 +47,33 @@ class _MapJourneyScreenState extends State<MapJourneyScreen> {
 
 
   @override
- void initState() {
-  super.initState();
+  void initState() {
+    super.initState();
 
-  loadLocation();
+    loadLocation();
 
-  StepService.startListening(
-    (steps){
+    _stepService.start();
+
+    totalSteps = _stepService.todaySteps;
+    distanceWalked = totalSteps * 0.00075;
+
+    _stepSubscription = _stepService.stepStream.listen((steps) {
+      if (!mounted) return;
 
       setState(() {
-
         totalSteps = steps;
 
         // Average human step = 0.75 meters
         distanceWalked = steps * 0.00075;
-
       });
+    });
+  }
 
-    },
-  );
- }
+  @override
+  void dispose() {
+    _stepSubscription?.cancel();
+    super.dispose();
+  }
 
 
   Future<void> loadLocation() async {
@@ -518,6 +530,20 @@ class _MapJourneyScreenState extends State<MapJourneyScreen> {
 
               ),
 
+            ),
+
+            const SizedBox(height: 16),
+
+            SizedBox(
+              width: double.infinity,
+              height: 50,
+              child: OutlinedButton.icon(
+                onPressed: () {
+                  Navigator.of(context).popUntil((route) => route.isFirst);
+                },
+                icon: const Icon(Icons.home_outlined),
+                label: const Text("Back to Home"),
+              ),
             ),
 
 

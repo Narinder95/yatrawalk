@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:yatrawalk/screens/map_journey_screen.dart';
+import 'package:yatrawalk/screens/home_screen.dart';
 
 
 class JourneySetupScreen extends StatelessWidget {
@@ -42,9 +42,10 @@ class JourneySetupScreen extends StatelessWidget {
 
         padding: const EdgeInsets.all(24),
 
-        child: Column(
+        child: SingleChildScrollView(
+          child: Column(
 
-          children: [
+            children: [
 
             const SizedBox(height:30),
 
@@ -79,7 +80,6 @@ class JourneySetupScreen extends StatelessWidget {
                 color:Colors.black54,
               ),
             ),
-
 
             const SizedBox(height:40),
 
@@ -250,18 +250,13 @@ class JourneySetupScreen extends StatelessWidget {
 
                 onPressed:(){
 
-                    Navigator.push(
+                    Navigator.pushAndRemoveUntil(
                         context,
                         MaterialPageRoute(
-                            builder: (_) => MapJourneyScreen(
-                                destinationName: destinationName,
-                                destinationLocation: destinationLocation,
-                                destinationEmoji: destinationEmoji,
-                                latitude: latitude,
-                                longitude: longitude,
-                                ),
-                                ),
-                                );
+                            builder: (_) => const HomeScreen(),
+                            ),
+                            (route) => false,
+                            );
                                 },
 
                 child: const Text(
@@ -278,6 +273,7 @@ class JourneySetupScreen extends StatelessWidget {
 
           ],
 
+          ),
         ),
 
       ),
