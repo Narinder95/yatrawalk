@@ -40,8 +40,11 @@
 <body>
   <script src="flutter_bootstrap.js" async></script>
 
-  <!-- Service Worker Registration -->
+  <!-- Service Worker Registration (Disabled - causes update loop) -->
   <script>
+    // Service worker temporarily disabled due to infinite update loop
+    // Will be re-enabled after fixing the update mechanism
+    /*
     if ('serviceWorker' in navigator) {
       navigator.serviceWorker.register('sw.js').then((reg) => {
         console.log('Service Worker registered successfully:', reg);
@@ -49,6 +52,7 @@
         console.log('Service Worker registration failed:', err);
       });
     }
+    */
   </script>
 </body>
 </html>
