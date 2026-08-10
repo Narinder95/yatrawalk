@@ -1,0 +1,17 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "flutter_android",
+      "runtimeExecutable": "flutter",
+      "runtimeArgs": ["run"],
+      "port": 0
+    },
+    {
+      "name": "flutter_windows",
+      "runtimeExecutable": "flutter",
+      "runtimeArgs": ["run", "-d", "windows"],
+      "port": 0
+    }
+  ]
+}
