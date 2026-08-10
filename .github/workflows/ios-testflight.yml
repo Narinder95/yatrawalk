@@ -1,0 +1,95 @@
+name: Build iOS & Deploy to TestFlight
+
+on:
+  push:
+    branches: [ main ]
+    paths-ignore:
+      - '**.md'
+      - 'web/**'
+      - 'android/**'
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: macos-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+
+    - name: Setup Flutter
+      uses: subosito/flutter-action@v2
+      with:
+        flutter-version: 'latest'
+        channel: 'stable'
+
+    - name: Get dependencies
+      run: flutter pub get
+
+    - name: Setup Ruby (for Fastlane)
+      uses: ruby/setup-ruby@v1
+      with:
+        ruby-version: 'latest'
+        bundler-cache: true
+
+    - name: Install Fastlane
+      run: gem install fastlane
+
+    - name: Setup Xcode
+      run: |
+        sudo xcode-select --switch /Applications/Xcode.app/Contents/Developer
+        sudo xcodebuild -runFirstLaunch
+
+    - name: Build Flutter iOS
+      run: flutter build ios --release --no-codesign
+
+    - name: Import signing certificate
+      run: |
+        echo "${{ secrets.IOS_CERTIFICATE_BASE64 }}" | base64 --decode > ~/ios_distribution.p12
+        security create-keychain -p "" build.keychain
+        security default-keychain -s build.keychain
+        security unlock-keychain -p "" build.keychain
+        security import ~/ios_distribution.p12 -k build.keychain -P "${{ secrets.IOS_CERTIFICATE_PASSWORD }}" -T /usr/bin/codesign
+        security set-key-partition-list -S apple-tool:,apple: -k "" build.keychain
+        rm ~/ios_distribution.p12
+
+    - name: Import provisioning profile
+      run: |
+        echo "${{ secrets.IOS_PROVISIONING_PROFILE_BASE64 }}" | base64 --decode > ~/ios_provisioning.mobileprovision
+        mkdir -p ~/Library/MobileDevice/Provisioning\ Profiles
+        cp ~/ios_provisioning.mobileprovision ~/Library/MobileDevice/Provisioning\ Profiles/
+        rm ~/ios_provisioning.mobileprovision
+
+    - name: Build archive with Xcode
+      run: |
+        cd ios
+        xcodebuild -workspace Runner.xcworkspace \
+          -scheme Runner \
+          -configuration Release \
+          -archivePath ./build/Runner.xcarchive \
+          archive
+
+    - name: Export IPA
+      run: |
+        cd ios
+        xcodebuild -exportArchive \
+          -archivePath ./build/Runner.xcarchive \
+          -exportOptionsPlist exportOptions.plist \
+          -exportPath ./build/ipa
+
+    - name: Upload to TestFlight
+      run: |
+        xcrun altool --upload-app \
+          -f ios/build/ipa/Runner.ipa \
+          -t ios \
+          -u "${{ secrets.APPSTORE_USERNAME }}" \
+          -p "${{ secrets.APPSTORE_PASSWORD }}" \
+          --output-format json
+
+    - name: Notify Success
+      if: success()
+      run: echo "✅ Build uploaded to TestFlight successfully!"
+
+    - name: Notify Failure
+      if: failure()
+      run: echo "❌ Build failed. Check logs above."
