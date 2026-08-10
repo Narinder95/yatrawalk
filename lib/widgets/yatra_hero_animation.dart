@@ -1,5 +1,4 @@
 
-import 'dart:ui' as ui;
 import 'package:flutter/material.dart';
 
 /// Animated hero card shown at the top of the Home dashboard.
@@ -110,27 +109,22 @@ class _YatraHeroAnimationState extends State<YatraHeroAnimation>
   // Change this value to make stickers bigger or smaller
   // Current: 192 (increased 20% from 160)
   // Try: 140 (smaller), 160 (default), 192 (current), 220 (bigger), 260 (very big)
-  static const double STICKER_HEIGHT = 100;
+  static const double STICKER_HEIGHT = 140;
 
   Widget _buildStickerImage(int index) {
-    return Container(
-      color: Colors.transparent,
-      padding: const EdgeInsets.all(8),
-      child: Image.asset(
-        stickerImages[index % stickerImages.length],
-        fit: BoxFit.contain,
-        filterQuality: FilterQuality.high,
-        cacheHeight: 400,
-        cacheWidth: 400,
-        errorBuilder: (context, error, stackTrace) {
-          return Center(
-            child: Text(
-              '🙏',
-              style: TextStyle(fontSize: 56),
-            ),
-          );
-        },
-      ),
+    return Image.asset(
+      stickerImages[index % stickerImages.length],
+      fit: BoxFit.contain,
+      errorBuilder: (context, error, stackTrace) {
+        // Fallback emoji if sticker not found
+        // 🎯 ADJUST EMOJI SIZE HERE: Change fontSize to match sticker size
+        return Center(
+          child: Text(
+            '🙏',
+            style: TextStyle(fontSize: 56),
+          ),
+        );
+      },
     );
   }
 
@@ -199,9 +193,8 @@ class _YatraHeroAnimationState extends State<YatraHeroAnimation>
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Container(
+                SizedBox(
                   height: STICKER_HEIGHT,
-                  color: Colors.transparent,
                   child: PageView.builder(
                     controller: _stickerController,
                     physics: const NeverScrollableScrollPhysics(),
