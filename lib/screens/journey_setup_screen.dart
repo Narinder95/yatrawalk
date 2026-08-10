@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:yatrawalk/screens/home_screen.dart';
+import 'package:digiteerth/screens/home_screen.dart';
 
 
 class JourneySetupScreen extends StatelessWidget {
