@@ -31,6 +31,7 @@ class _StartupScreenState extends State<StartupScreen> {
   Timer? _splashTimer;
   Future<Widget>? _cachedNextScreenFuture;
   String? _cachedUserId;
+  Timer? _authDebounceTimer;
 
   // Keep splash screen instance stable to prevent video reload
   final _splashScreen = const _SplashScreen();
@@ -55,6 +56,7 @@ class _StartupScreenState extends State<StartupScreen> {
   @override
   void dispose() {
     _splashTimer?.cancel();
+    _authDebounceTimer?.cancel();
     super.dispose();
   }
 

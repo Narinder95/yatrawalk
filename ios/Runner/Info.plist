@@ -66,5 +66,11 @@
 		<string>UIInterfaceOrientationLandscapeLeft</string>
 		<string>UIInterfaceOrientationLandscapeRight</string>
 	</array>
+	<key>NSMotionUsageDescription</key>
+	<string>YatraWalk needs access to your motion data to count your steps during spiritual walks.</string>
+	<key>NSHealthShareUsageDescription</key>
+	<string>YatraWalk needs access to your health data to track steps and physical activity.</string>
+	<key>NSHealthUpdateUsageDescription</key>
+	<string>YatraWalk needs permission to update your health data with step counts from your walks.</string>
 </dict>
 </plist>
