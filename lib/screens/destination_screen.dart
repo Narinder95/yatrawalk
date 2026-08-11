@@ -136,7 +136,7 @@ class _DestinationScreenState extends State<DestinationScreen> {
       latitude: 31.6200,
       longitude: 74.8765,
       distanceKm: 450,
-      backgroundImage: 'assets/images/hero-backgrounds/background_1.png',
+      backgroundImage: 'assets/images/destination-backgrounds/golden_temple.png',
     ),
     Destination(
       name: "Kedarnath",
@@ -146,7 +146,7 @@ class _DestinationScreenState extends State<DestinationScreen> {
       latitude: 30.7352,
       longitude: 79.0669,
       distanceKm: 2200,
-      backgroundImage: 'assets/images/hero-backgrounds/background_2.png',
+      backgroundImage: 'assets/images/destination-backgrounds/kedarnath.png',
     ),
     Destination(
       name: "Vaishno Devi",
@@ -156,7 +156,7 @@ class _DestinationScreenState extends State<DestinationScreen> {
       latitude: 33.0307,
       longitude: 74.9490,
       distanceKm: 900,
-      backgroundImage: 'assets/images/hero-backgrounds/background_3.png',
+      backgroundImage: 'assets/images/destination-backgrounds/vaishno_devi.png',
     ),
     Destination(
       name: "Tirupati Balaji",
@@ -166,7 +166,7 @@ class _DestinationScreenState extends State<DestinationScreen> {
       latitude: 13.6833,
       longitude: 79.3470,
       distanceKm: 1800,
-      backgroundImage: 'assets/images/hero-backgrounds/background_4.png',
+      backgroundImage: 'assets/images/destination-backgrounds/tirupati_balaji.png',
     ),
     Destination(
       name: "Bodh Gaya",
@@ -176,7 +176,7 @@ class _DestinationScreenState extends State<DestinationScreen> {
       latitude: 24.6950,
       longitude: 84.9913,
       distanceKm: 1200,
-      backgroundImage: 'assets/images/hero-backgrounds/background_5.png',
+      backgroundImage: 'assets/images/destination-backgrounds/bodh_gaya.png',
     ),
     Destination(
       name: "Ajmer Sharif",
@@ -186,7 +186,7 @@ class _DestinationScreenState extends State<DestinationScreen> {
       latitude: 26.4579,
       longitude: 74.6283,
       distanceKm: 700,
-      backgroundImage: 'assets/images/hero-backgrounds/background_1.png',
+      backgroundImage: 'assets/images/destination-backgrounds/ajmer_sharif.png',
     ),
     Destination(
       name: "Shirdi Sai Baba",
@@ -196,7 +196,7 @@ class _DestinationScreenState extends State<DestinationScreen> {
       latitude: 19.7666,
       longitude: 74.4774,
       distanceKm: 1400,
-      backgroundImage: 'assets/images/hero-backgrounds/background_2.png',
+      backgroundImage: 'assets/images/destination-backgrounds/shirdi_sai_baba.png',
     ),
   ];
 
