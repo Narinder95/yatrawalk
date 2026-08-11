@@ -1,6 +1,5 @@
 import 'dart:async';
 
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 import '../main.dart' show routeObserver;
@@ -120,10 +119,6 @@ class _DashboardScreenState extends State<DashboardScreen> with RouteAware {
     _todaySteps = _stepService.todaySteps;
     _totalSteps = _stepService.totalSteps;
 
-    // Get user's name from Firebase Auth
-    final user = FirebaseAuth.instance.currentUser;
-    _userName = user?.displayName ?? 'Guest';
-
     // Make sure the step service is running so numbers update live even if
     // the Steps tab hasn't been opened yet.
     _stepService.start();
@@ -198,9 +193,12 @@ class _DashboardScreenState extends State<DashboardScreen> with RouteAware {
   }
 
   Future<void> _loadProfile() async {
-    final goal = await _profileService.getDailyGoal();
+    final profile = await _profileService.loadProfile();
     if (!mounted) return;
-    setState(() => _dailyGoal = goal);
+    setState(() {
+      _userName = profile.name.isNotEmpty ? profile.name : 'Guest';
+      _dailyGoal = profile.dailyGoal;
+    });
   }
 
   Future<void> _loadStreak() async {
