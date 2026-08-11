@@ -20,6 +20,8 @@ class JourneyProgressCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    debugPrint('JourneyProgressCard - backgroundImage: $backgroundImage');
+
     final double progress = totalDistanceKm > 0
         ? (walkedKm / totalDistanceKm).clamp(0.0, 1.0)
         : 0.0;
@@ -38,13 +40,15 @@ class JourneyProgressCard extends StatelessWidget {
         child: Stack(
           children: [
             Container(
+              width: double.infinity,
+              height: double.infinity,
               decoration: BoxDecoration(
                 image: DecorationImage(
                   image: AssetImage(backgroundImage),
                   fit: BoxFit.cover,
                   alignment: Alignment.center,
                   onError: (exception, stackTrace) {
-                    debugPrint('Error loading background image: $backgroundImage - $exception');
+                    debugPrint('❌ Image error: $backgroundImage - $exception');
                   },
                 ),
                 color: Colors.orange.shade100,
