@@ -205,6 +205,7 @@ class _StepsScreenState extends State<StepsScreen> {
                         "${journey.destinationName}, ${journey.destinationLocation}",
                     walkedKm: progressData.walkedKm,
                     totalDistanceKm: progressData.totalDistanceKm,
+                    backgroundImage: journey.backgroundImage,
                   )
                 else
                   _NoActiveYatraCard(

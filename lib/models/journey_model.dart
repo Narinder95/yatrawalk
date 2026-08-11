@@ -6,6 +6,7 @@ class JourneyModel {
   final String destinationName;
   final String destinationLocation;
   final String destinationEmoji;
+  final String backgroundImage;
 
   final double latitude;
   final double longitude;
@@ -35,6 +36,7 @@ class JourneyModel {
     required this.destinationName,
     required this.destinationLocation,
     this.destinationEmoji = "🛕",
+    this.backgroundImage = 'assets/images/hero-backgrounds/background_1.png',
     this.latitude = 0.0,
     this.longitude = 0.0,
     required this.totalDistanceKm,
@@ -51,6 +53,7 @@ class JourneyModel {
     String? destinationName,
     String? destinationLocation,
     String? destinationEmoji,
+    String? backgroundImage,
     double? latitude,
     double? longitude,
     double? totalDistanceKm,
@@ -66,6 +69,7 @@ class JourneyModel {
       destinationName: destinationName ?? this.destinationName,
       destinationLocation: destinationLocation ?? this.destinationLocation,
       destinationEmoji: destinationEmoji ?? this.destinationEmoji,
+      backgroundImage: backgroundImage ?? this.backgroundImage,
       latitude: latitude ?? this.latitude,
       longitude: longitude ?? this.longitude,
       totalDistanceKm: totalDistanceKm ?? this.totalDistanceKm,
@@ -84,6 +88,7 @@ class JourneyModel {
       destinationName: json['destinationName']?.toString() ?? "",
       destinationLocation: json['destinationLocation']?.toString() ?? "",
       destinationEmoji: json['destinationEmoji']?.toString() ?? "🛕",
+      backgroundImage: json['backgroundImage']?.toString() ?? 'assets/images/hero-backgrounds/background_1.png',
       latitude: (json['latitude'] as num?)?.toDouble() ?? 0.0,
       longitude: (json['longitude'] as num?)?.toDouble() ?? 0.0,
       totalDistanceKm: (json['totalDistanceKm'] as num?)?.toDouble() ?? 0,
@@ -104,6 +109,7 @@ class JourneyModel {
       "destinationName": destinationName,
       "destinationLocation": destinationLocation,
       "destinationEmoji": destinationEmoji,
+      "backgroundImage": backgroundImage,
       "latitude": latitude,
       "longitude": longitude,
       "totalDistanceKm": totalDistanceKm,

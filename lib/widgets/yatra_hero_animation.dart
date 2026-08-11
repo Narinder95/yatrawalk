@@ -109,7 +109,7 @@ class _YatraHeroAnimationState extends State<YatraHeroAnimation>
   // Change this value to make stickers bigger or smaller
   // Current: 192 (increased 20% from 160)
   // Try: 140 (smaller), 160 (default), 192 (current), 220 (bigger), 260 (very big)
-  static const double STICKER_HEIGHT = 140;
+  static const double STICKER_HEIGHT = 100;
 
   Widget _buildStickerImage(int index) {
     return Image.asset(

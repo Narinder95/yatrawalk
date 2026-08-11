@@ -8,24 +8,15 @@ class JourneyProgressCard extends StatelessWidget {
   final String destination;
   final double walkedKm;
   final double totalDistanceKm;
+  final String backgroundImage;
 
   const JourneyProgressCard({
     super.key,
     required this.destination,
     required this.walkedKm,
     required this.totalDistanceKm,
+    required this.backgroundImage,
   });
-
-  String _getBackgroundImage() {
-    const images = [
-      'assets/images/steps-backgrounds/temple_journey.png',
-      'assets/images/steps-backgrounds/mountain_peak.png',
-      'assets/images/steps-backgrounds/sunrise_destination.png',
-      'assets/images/steps-backgrounds/riverside_walk.png',
-      'assets/images/steps-backgrounds/golden_sunset.png',
-    ];
-    return images[destination.hashCode % images.length];
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -47,7 +38,7 @@ class JourneyProgressCard extends StatelessWidget {
           Container(
             decoration: BoxDecoration(
               image: DecorationImage(
-                image: AssetImage(_getBackgroundImage()),
+                image: AssetImage(backgroundImage),
                 fit: BoxFit.cover,
                 alignment: Alignment.center,
               ),
