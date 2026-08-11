@@ -33,17 +33,23 @@ class JourneyProgressCard extends StatelessWidget {
         borderRadius: BorderRadius.circular(20),
       ),
       clipBehavior: Clip.antiAlias,
-      child: Stack(
-        children: [
-          Container(
-            decoration: BoxDecoration(
-              image: DecorationImage(
-                image: AssetImage(backgroundImage),
-                fit: BoxFit.cover,
-                alignment: Alignment.center,
+      child: Container(
+        constraints: const BoxConstraints(minHeight: 300),
+        child: Stack(
+          children: [
+            Container(
+              decoration: BoxDecoration(
+                image: DecorationImage(
+                  image: AssetImage(backgroundImage),
+                  fit: BoxFit.cover,
+                  alignment: Alignment.center,
+                  onError: (exception, stackTrace) {
+                    debugPrint('Error loading background image: $backgroundImage - $exception');
+                  },
+                ),
+                color: Colors.orange.shade100,
               ),
             ),
-          ),
           Container(
             decoration: BoxDecoration(
               gradient: LinearGradient(
@@ -191,6 +197,7 @@ class JourneyProgressCard extends StatelessWidget {
             ),
           ),
         ],
+        ),
       ),
     );
   }
