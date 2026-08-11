@@ -42,8 +42,6 @@ class _MapJourneyScreenState extends State<MapJourneyScreen> {
   final Set<Marker> markers = {};
   final Set<Polyline> polylines = {};
 
-  static const LatLng initialPosition =
-      LatLng(20.5937, 78.9629);
 
 
   @override
@@ -81,10 +79,6 @@ class _MapJourneyScreenState extends State<MapJourneyScreen> {
     try {
 
       final position = await LocationService.getCurrentLocation();
-
-      print("CURRENT LOCATION:");
-      print(position.latitude);
-      print(position.longitude);
 
       currentPosition = position;
 
@@ -134,14 +128,8 @@ class _MapJourneyScreenState extends State<MapJourneyScreen> {
         ),
      ],
      width: 5,
-       ), 
+       ),
        );
-
-       print("Polyline count: ${polylines.length}");
-
-
-      print("Markers count: ${markers.length}");
-
 
       setState(() {
       markers;
@@ -191,9 +179,7 @@ class _MapJourneyScreenState extends State<MapJourneyScreen> {
 
 
     } catch(e) {
-
-      print("Location Error: $e");
-
+      debugPrint("Location Error: $e");
     }
 
   }

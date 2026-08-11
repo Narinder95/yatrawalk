@@ -29,7 +29,6 @@ class _StepsScreenState extends State<StepsScreen> {
   StreamSubscription<int>? _dailyGoalSub;
 
   int _steps = 0;
-  int _totalSteps = 0;
   int _dailyGoal = 10000;
 
   bool _loading = true;
@@ -53,7 +52,6 @@ class _StepsScreenState extends State<StepsScreen> {
      _permissionGranted = true;
      await _stepService.start();
      _steps = _stepService.todaySteps;
-     _totalSteps = _stepService.totalSteps;
 
      _subscription = _stepService.stepStream.listen((value) {
        if (!mounted) return;
@@ -62,7 +60,6 @@ class _StepsScreenState extends State<StepsScreen> {
 
      _totalSubscription = _stepService.totalStepStream.listen((value) {
        if (!mounted) return;
-       setState(() => _totalSteps = value);
      });
 
      if (mounted) setState(() => _loading = false);

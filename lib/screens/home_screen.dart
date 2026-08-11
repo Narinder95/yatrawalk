@@ -278,7 +278,6 @@ class _DashboardScreenState extends State<DashboardScreen> with RouteAware {
     final totalDistanceKm = progressData?.totalDistanceKm ?? 0;
     final progress = progressData?.progress ?? 0.0;
     final remainingKm = progressData?.remainingKm ?? 0;
-    final daysOnYatra = progressData?.daysOnYatra ?? 0;
     final yatraSteps = progressData?.yatraSteps ?? 0;
 
     return SafeArea(

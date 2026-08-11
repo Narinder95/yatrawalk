@@ -28,8 +28,6 @@ class _OnboardingFlowState extends State<OnboardingFlow> {
       WelcomeScreen(controller),
       GoalScreen(controller),
       LocationScreen(controller),
-      NotificationScreen(controller),
-      HealthScreen(controller),
       FinishScreen(controller),
     ];
 

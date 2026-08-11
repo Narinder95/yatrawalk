@@ -10,7 +10,7 @@ class LocationScreen extends StatelessWidget {
   const LocationScreen(this.controller, {super.key});
 
   Future<void> _requestLocation() async {
-    final status = await Permission.locationWhenInUse.request();
+    await Permission.locationWhenInUse.request();
 
     // Continue regardless of the user's choice.
     // You can enforce permission later if needed.
