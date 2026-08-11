@@ -15,7 +15,6 @@ class YatraHeroAnimation extends StatefulWidget {
   final double walkedKm;
   final double totalDistanceKm;
   final int streakDays;
-  final String backgroundImage;
 
   const YatraHeroAnimation({
     super.key,
@@ -26,7 +25,6 @@ class YatraHeroAnimation extends StatefulWidget {
     this.walkedKm = 0,
     this.totalDistanceKm = 0,
     this.streakDays = 0,
-    this.backgroundImage = 'assets/images/hero-backgrounds/background_1.png',
   });
 
   @override
@@ -130,13 +128,13 @@ class _YatraHeroAnimationState extends State<YatraHeroAnimation>
     );
   }
 
-  Widget _buildBackgroundImage() {
+  Widget _buildBackgroundImage(int index) {
     return Container(
       color: const Color(0xFFF4511E),
       child: Opacity(
         opacity: 0.6,
         child: Image.asset(
-          widget.backgroundImage,
+          backgroundImages[index % backgroundImages.length],
           fit: BoxFit.cover,
           filterQuality: FilterQuality.low,
           cacheHeight: 300,
@@ -179,7 +177,7 @@ class _YatraHeroAnimationState extends State<YatraHeroAnimation>
             // Animated background images
             AnimatedSwitcher(
               duration: const Duration(milliseconds: 800),
-              child: _buildBackgroundImage(),
+              child: _buildBackgroundImage(_currentBackgroundIndex),
             ),
 
             // Content on top

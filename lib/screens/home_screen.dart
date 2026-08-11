@@ -316,7 +316,6 @@ class _DashboardScreenState extends State<DashboardScreen> with RouteAware {
                 walkedKm: walkedKm,
                 totalDistanceKm: totalDistanceKm,
                 streakDays: _streakDays,
-                backgroundImage: journey?.backgroundImage ?? 'assets/images/hero-backgrounds/background_1.png',
               )
             else
               const SizedBox(
