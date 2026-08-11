@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 import 'journey_screen.dart';
 import 'profile_screen.dart';
-import 'steps_screen.dart';
+import 'steps/steps_screen.dart';
 import '../widgets/bottom_nav.dart';
 
 class MainScreen extends StatefulWidget {
