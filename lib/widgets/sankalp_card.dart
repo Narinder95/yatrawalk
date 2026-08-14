@@ -8,6 +8,7 @@ class SankalpCard extends StatelessWidget {
   final bool checkedInToday;
   final VoidCallback onCheckIn;
   final VoidCallback onEdit;
+  final VoidCallback? onTap;
 
   const SankalpCard({
     super.key,
@@ -15,19 +16,22 @@ class SankalpCard extends StatelessWidget {
     required this.checkedInToday,
     required this.onCheckIn,
     required this.onEdit,
+    this.onTap,
   });
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      width: double.infinity,
-      padding: const EdgeInsets.all(18),
-      decoration: BoxDecoration(
-        color: Colors.orange.shade50,
-        borderRadius: BorderRadius.circular(20),
-        border: Border.all(color: Colors.orange.shade100),
-      ),
-      child: Column(
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        width: double.infinity,
+        padding: const EdgeInsets.all(18),
+        decoration: BoxDecoration(
+          color: Colors.orange.shade50,
+          borderRadius: BorderRadius.circular(20),
+          border: Border.all(color: Colors.orange.shade100),
+        ),
+        child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Row(
@@ -79,6 +83,7 @@ class SankalpCard extends StatelessWidget {
             ),
           ),
         ],
+        ),
       ),
     );
   }

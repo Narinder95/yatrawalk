@@ -85,7 +85,6 @@ class _StepsScreenState extends State<StepsScreen> {
    await _stepService.start();
 
    _steps = _stepService.todaySteps;
-   _totalSteps = _stepService.totalSteps;
 
    _subscription = _stepService.stepStream.listen((value) {
     if (!mounted) return;
@@ -97,7 +96,6 @@ class _StepsScreenState extends State<StepsScreen> {
 
    _totalSubscription = _stepService.totalStepStream.listen((value) {
      if (!mounted) return;
-     setState(() => _totalSteps = value);
    });
 
    setState(() => _loading = false);

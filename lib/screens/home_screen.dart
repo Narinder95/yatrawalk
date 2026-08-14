@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 
 import '../main.dart' show routeObserver;
 import '../models/journey_model.dart';
+import '../models/sankalp_model.dart';
 import '../services/journey_service.dart';
 import '../services/sankalp_service.dart';
 import '../services/step_service.dart';
@@ -14,8 +15,8 @@ import '../widgets/yatra_hero_animation.dart';
 import '../widgets/yatra_stat_tile.dart';
 import 'destination_screen.dart';
 import 'family/family_screen.dart';
-import 'mantras/mantras_screen.dart';
 import 'profile/profile_screen.dart';
+import 'sankalp/sankalp_screen.dart';
 import 'steps/steps_screen.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -35,9 +36,12 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     final screens = [
-      DashboardScreen(onViewSteps: () => _goToTab(1)),
+      DashboardScreen(
+        onViewSteps: () => _goToTab(1),
+        onViewSankalps: () => _goToTab(2),
+      ),
       const StepsScreen(),
-      const MantrasScreen(),
+      const SankalpScreen(),
       const FamilyScreen(),
       const ProfileScreen(),
     ];
@@ -63,9 +67,9 @@ class _HomeScreenState extends State<HomeScreen> {
             label: "Steps",
           ),
           NavigationDestination(
-            icon: Icon(Icons.favorite_outline),
-            selectedIcon: Icon(Icons.favorite),
-            label: "Mantras",
+            icon: Icon(Icons.emoji_events_outlined),
+            selectedIcon: Icon(Icons.emoji_events),
+            label: "Sankalp",
           ),
           NavigationDestination(
             icon: Icon(Icons.directions_walk_outlined),
@@ -87,8 +91,13 @@ class DashboardScreen extends StatefulWidget {
   /// Switches Home's bottom nav to the Steps tab, which shows the full,
   /// authoritative progress view for the active Yatra.
   final VoidCallback onViewSteps;
+  final VoidCallback onViewSankalps;
 
-  const DashboardScreen({super.key, required this.onViewSteps});
+  const DashboardScreen({
+    super.key,
+    required this.onViewSteps,
+    required this.onViewSankalps,
+  });
 
   @override
   State<DashboardScreen> createState() => _DashboardScreenState();
@@ -111,6 +120,10 @@ class _DashboardScreenState extends State<DashboardScreen> with RouteAware {
 
   JourneyModel? _activeJourney;
   bool _loadingJourney = true;
+
+  List<Sankalp> _activeSankalps = [];
+  List<Sankalp> _completedSankalps = [];
+  bool _loadingSankalps = true;
 
   @override
   void initState() {
@@ -136,6 +149,7 @@ class _DashboardScreenState extends State<DashboardScreen> with RouteAware {
     _loadActiveJourney();
     _loadProfile();
     _loadStreak();
+    _loadSankalps();
 
     _dailyGoalSub = _profileService.dailyGoalStream.listen((goal) {
       if (!mounted) return;
@@ -170,6 +184,7 @@ class _DashboardScreenState extends State<DashboardScreen> with RouteAware {
     _loadActiveJourney();
     _loadProfile();
     _loadStreak();
+    _loadSankalps();
   }
 
   Future<void> _loadActiveJourney() async {
@@ -205,6 +220,27 @@ class _DashboardScreenState extends State<DashboardScreen> with RouteAware {
     final streak = await _stepService.getStreakDays();
     if (!mounted) return;
     setState(() => _streakDays = streak);
+  }
+
+  Future<void> _loadSankalps() async {
+    try {
+      final sankalps = await SankalpService.getUserSankalps();
+
+      if (!mounted) return;
+      setState(() {
+        _activeSankalps = sankalps.where((s) => s.isActive && !s.isComplete).toList();
+        _completedSankalps = sankalps.where((s) => s.isComplete).toList();
+        _loadingSankalps = false;
+      });
+    } catch (e) {
+      print('Error loading sankalps: $e');
+      if (!mounted) return;
+      setState(() {
+        _activeSankalps = [];
+        _completedSankalps = [];
+        _loadingSankalps = false;
+      });
+    }
   }
 
   /// Starting a new Yatra (or replacing an active, incomplete one) is
@@ -266,6 +302,68 @@ class _DashboardScreenState extends State<DashboardScreen> with RouteAware {
     setState(() => _activeJourney = updated);
   }
 
+  void _onViewSankalps() {
+    widget.onViewSankalps();
+  }
+
+  Widget _buildSankalpCard(Sankalp sankalp, Color statusColor) {
+    return GestureDetector(
+      onTap: _onViewSankalps,
+      child: Container(
+        padding: const EdgeInsets.all(14),
+        decoration: BoxDecoration(
+          border: Border.all(
+            color: statusColor.withValues(alpha: 0.3),
+            width: 1.5,
+          ),
+          borderRadius: BorderRadius.circular(12),
+          color: statusColor.withValues(alpha: 0.05),
+        ),
+        child: Row(
+          children: [
+            Text(
+              sankalp.emoji ?? '🎯',
+              style: const TextStyle(fontSize: 20),
+            ),
+            const SizedBox(width: 12),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    sankalp.title,
+                    style: const TextStyle(
+                      fontSize: 14,
+                      fontWeight: FontWeight.w600,
+                    ),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                  const SizedBox(height: 2),
+                  Text(
+                    sankalp.description,
+                    style: TextStyle(
+                      fontSize: 12,
+                      color: Colors.grey.shade600,
+                    ),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                ],
+              ),
+            ),
+            Icon(
+              sankalp.isComplete ? Icons.check_circle : Icons.local_fire_department,
+              color: statusColor,
+              size: 20,
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+
   @override
   Widget build(BuildContext context) {
     final journey = _activeJourney;
@@ -286,6 +384,7 @@ class _DashboardScreenState extends State<DashboardScreen> with RouteAware {
           await _loadActiveJourney();
           await _loadProfile();
           await _loadStreak();
+          await _loadSankalps();
         },
         child: ListView(
           padding: const EdgeInsets.all(20),
@@ -322,15 +421,141 @@ class _DashboardScreenState extends State<DashboardScreen> with RouteAware {
                 child: Center(child: CircularProgressIndicator()),
               ),
 
-            // --- Daily Sankalp ritual ---
-            if (!_loadingJourney && journey != null) ...[
-              const SizedBox(height: 16),
-              SankalpCard(
-                sankalp: journey.sankalp,
-                checkedInToday: _sankalpCheckedIn,
-                onCheckIn: _onSankalpCheckIn,
-                onEdit: _onEditSankalp,
-              ),
+            // --- Sankalps Section ---
+            const SizedBox(height: 16),
+            if (_loadingSankalps)
+              const Padding(
+                padding: EdgeInsets.all(16),
+                child: Center(child: CircularProgressIndicator()),
+              )
+            else if (_activeSankalps.isEmpty && _completedSankalps.isEmpty)
+              Padding(
+                padding: const EdgeInsets.all(16),
+                child: Center(
+                  child: Column(
+                    children: [
+                      Text(
+                        '✨',
+                        style: TextStyle(fontSize: 32),
+                      ),
+                      const SizedBox(height: 8),
+                      Text(
+                        'No sankalps yet',
+                        style: TextStyle(
+                          fontSize: 14,
+                          color: Colors.grey.shade600,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              )
+            else ...[
+              // Active Sankalps
+              if (_activeSankalps.isNotEmpty) ...[
+                Text(
+                  '🔥 Active Sankalps (${_activeSankalps.length})',
+                  style: TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.w600,
+                    color: Colors.grey.shade800,
+                  ),
+                ),
+                const SizedBox(height: 12),
+                ..._activeSankalps.take(2).map((sankalp) => Padding(
+                  padding: const EdgeInsets.only(bottom: 12),
+                  child: _buildSankalpCard(sankalp, Colors.orange),
+                )),
+                if (_activeSankalps.length > 2)
+                  Padding(
+                    padding: const EdgeInsets.only(bottom: 12),
+                    child: GestureDetector(
+                      onTap: _onViewSankalps,
+                      child: Container(
+                        padding: const EdgeInsets.all(12),
+                        decoration: BoxDecoration(
+                          border: Border.all(color: Colors.orange.shade200),
+                          borderRadius: BorderRadius.circular(12),
+                          color: Colors.orange.shade50,
+                        ),
+                        child: Text(
+                          'View ${_activeSankalps.length - 2} more →',
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                            fontSize: 14,
+                            color: Colors.orange.shade700,
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                const SizedBox(height: 16),
+              ],
+
+              // Completed Sankalps
+              if (_completedSankalps.isNotEmpty) ...[
+                Text(
+                  '✅ Completed (${_completedSankalps.length})',
+                  style: TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.w600,
+                    color: Colors.grey.shade800,
+                  ),
+                ),
+                const SizedBox(height: 12),
+                ..._completedSankalps.take(2).map((sankalp) => Padding(
+                  padding: const EdgeInsets.only(bottom: 12),
+                  child: _buildSankalpCard(sankalp, Colors.green),
+                )),
+                if (_completedSankalps.length > 2)
+                  Padding(
+                    padding: const EdgeInsets.only(bottom: 12),
+                    child: GestureDetector(
+                      onTap: _onViewSankalps,
+                      child: Container(
+                        padding: const EdgeInsets.all(12),
+                        decoration: BoxDecoration(
+                          border: Border.all(color: Colors.green.shade200),
+                          borderRadius: BorderRadius.circular(12),
+                          color: Colors.green.shade50,
+                        ),
+                        child: Text(
+                          'View ${_completedSankalps.length - 2} more →',
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                            fontSize: 14,
+                            color: Colors.green.shade700,
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                const SizedBox(height: 16),
+              ],
+
+              // Show journey sankalp if exists
+              if (!_loadingJourney && journey != null) ...[
+                const Divider(),
+                const SizedBox(height: 16),
+                Text(
+                  '🙏 Journey Intention',
+                  style: TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.w600,
+                    color: Colors.grey.shade800,
+                  ),
+                ),
+                const SizedBox(height: 12),
+                SankalpCard(
+                  sankalp: journey.sankalp,
+                  checkedInToday: _sankalpCheckedIn,
+                  onCheckIn: _onSankalpCheckIn,
+                  onEdit: _onEditSankalp,
+                  onTap: _onViewSankalps,
+                ),
+              ],
             ],
 
             const SizedBox(height: 24),
