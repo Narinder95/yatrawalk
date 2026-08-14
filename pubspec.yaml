@@ -3,7 +3,7 @@ description: A Spiritual Walking Journey App
 
 publish_to: "none"
 
-version: 1.0.0+1
+version: 1.0.0+10
 
 environment:
   sdk: ">=3.5.0 <4.0.0"
