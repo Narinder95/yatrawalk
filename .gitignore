@@ -43,3 +43,10 @@ app.*.map.json
 /android/app/debug
 /android/app/profile
 /android/app/release
+
+# Sensitive files - should never be committed
+lib/firebase_options.dart
+.env
+.env.local
+*.key
+*.pem

@@ -89,7 +89,6 @@ class _TodayStepsCardState extends State<TodayStepsCard>
       backgroundImages[index % backgroundImages.length],
       fit: BoxFit.cover,
       errorBuilder: (context, error, stackTrace) {
-        // Fallback to gradient if image not found
         return Container(
           decoration: BoxDecoration(
             gradient: fallbackGradients[index % fallbackGradients.length],

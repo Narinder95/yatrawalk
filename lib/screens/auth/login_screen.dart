@@ -22,8 +22,12 @@ class _LoginScreenState extends State<LoginScreen> {
       body: SafeArea(
         child: Column(
           children: [
-            const SizedBox(height: 24),
-            const Text("🙏", style: TextStyle(fontSize: 56)),
+            const SizedBox(height: 60),
+            Image.asset(
+              'assets/images/stickers/meditating.png',
+              width: 80,
+              height: 80,
+            ),
             const SizedBox(height: 12),
             const Text(
               "DigiTeerth",
